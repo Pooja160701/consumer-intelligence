@@ -4,7 +4,7 @@ from sqlalchemy import pool
 from alembic import context
 from app.config.settings import settings
 from app.services.database import Base
-from app import models  # noqa: F401
+from app import models 
 
 config = context.config
 
