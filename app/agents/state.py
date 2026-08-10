@@ -21,6 +21,12 @@ class IntelligenceState(TypedDict, total=False):
 
     recommendation: str
 
+    prompt_version: str
+
+    evidence_count: int
+
+    grounded: bool
+
     priority_score: float
 
     priority: str

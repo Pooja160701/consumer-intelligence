@@ -1,10 +1,27 @@
 from typing import Any
+from app.services.insight_generator import InsightGenerator
+from app.services.insight_parser import InsightParser
+from app.services.llm import LLMProvider, MockLLMProvider
 
 class InsightGenerationAgent:
     """
-    Convert signal + brand context + evidence
-    into a structured business insight.
+    Generate structured, evidence-grounded insights.
+
+    The agent delegates model interaction to InsightGenerator,
+    keeping the LangGraph layer independent from the concrete
+    LLM provider.
     """
+
+    def __init__(
+        self,
+        llm: LLMProvider | None = None,
+        parser: InsightParser | None = None,
+    ) -> None:
+        self.generator = InsightGenerator(
+            llm=llm or MockLLMProvider()
+        )
+
+        self.parser = parser or InsightParser()
 
     def run(
         self,
@@ -13,121 +30,31 @@ class InsightGenerationAgent:
         relevance: dict[str, float],
         evidence: list[dict[str, Any]],
     ) -> dict[str, Any]:
-        brand_name = brand["name"]
-        signal_title = signal["title"]
+        """Generate and validate a structured insight."""
 
-        relevance_score = relevance.get(
-            "overall_score",
-            0.0,
+        generated = self.generator.generate(
+            signal=signal,
+            brand=brand,
+            relevance=relevance,
+            evidence=evidence,
         )
 
-        observation = (
-            f"{signal_title} is relevant to "
-            f"{brand_name} with a relevance score of "
-            f"{relevance_score:.2f}."
-        )
-
-        if evidence:
-            interpretation = (
-                f"The signal is supported by "
-                f"{len(evidence)} retrieved evidence item(s) "
-                f"from the intelligence corpus."
-            )
-        else:
-            interpretation = (
-                "No supporting evidence was retrieved "
-                "from the current intelligence corpus."
-            )
-
-        if relevance_score >= 0.70:
-            opportunity = (
-                f"{brand_name} could evaluate a targeted "
-                "response aligned with the observed trend."
-            )
-
-            risk = (
-                "Competitors may capture consumer demand "
-                "if the trend becomes sustained."
-            )
-
-            recommendation = (
-                "Validate the trend with additional consumer "
-                "evidence and assess a focused product, "
-                "positioning, or campaign response."
-            )
-
-        elif relevance_score >= 0.40:
-            opportunity = (
-                f"{brand_name} should monitor the signal "
-                "for stronger evidence of sustained demand."
-            )
-
-            risk = (
-                "Acting too early could create unnecessary "
-                "investment before the trend is validated."
-            )
-
-            recommendation = (
-                "Continue monitoring and gather additional "
-                "evidence before committing resources."
-            )
-
-        else:
-            opportunity = (
-                "Limited immediate opportunity identified."
-            )
-
-            risk = (
-                "Low relevance means immediate action may "
-                "not be justified."
-            )
-
-            recommendation = (
-                "Keep the signal in the intelligence backlog "
-                "and reassess if relevance increases."
-            )
-
-        confidence = self._confidence(
-            relevance_score,
-            evidence,
+        parsed = self.parser.parse(
+            generated["raw_response"]
         )
 
         return {
-            "observation": observation,
-            "interpretation": interpretation,
-            "opportunity": opportunity,
-            "risk": risk,
-            "recommendation": recommendation,
-            "confidence_score": confidence,
+            **parsed,
+            "prompt_version": generated[
+                "prompt_version"
+            ],
+            "evidence_count": generated[
+                "evidence_count"
+            ],
+            "grounded": generated[
+                "grounded"
+            ],
+            "confidence_score": generated[
+                "confidence_score"
+            ],
         }
-
-    @staticmethod
-    def _confidence(
-        relevance_score: float,
-        evidence: list[dict[str, Any]],
-    ) -> float:
-        evidence_score = 0.0
-
-        if evidence:
-            evidence_score = min(
-                max(
-                    float(
-                        evidence[0].get(
-                            "score",
-                            0.0,
-                        )
-                    ),
-                    0.0,
-                ),
-                1.0,
-            )
-
-        confidence = (
-            relevance_score * 0.60
-            + evidence_score * 0.40
-        )
-
-        return round(
-            min(confidence, 1.0),
-            4,
-        )

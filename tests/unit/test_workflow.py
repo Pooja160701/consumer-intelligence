@@ -138,3 +138,65 @@ def test_workflow_contains_expected_nodes() -> None:
     assert "evidence_retrieval" in graph_nodes
     assert "insight_generation" in graph_nodes
     assert "prioritization" in graph_nodes
+
+def test_workflow_uses_structured_llm_insight() -> None:
+    workflow = IntelligenceWorkflow(
+        retriever=create_retriever()
+    )
+
+    signal = {
+        "id": "signal_002",
+        "title": "Protein demand is increasing",
+        "text": (
+            "Consumers increasingly seek "
+            "high protein products."
+        ),
+        "category": "healthy_snacks",
+        "signal_type": "consumer_trend",
+        "metadata": {
+            "region": "India"
+        },
+    }
+
+    brand = {
+        "id": "brand_001",
+        "name": "VitaBite",
+        "category": "healthy_snacks",
+        "strategic_priorities": [
+            "health",
+            "protein",
+        ],
+        "keywords": [
+            "protein",
+            "healthy snacks",
+        ],
+        "target_consumer": [
+            "young_adults",
+        ],
+        "geography": [
+            "india",
+        ],
+    }
+
+    result = workflow.run(
+        signal=signal,
+        brand=brand,
+    )
+
+    assert result["observation"]
+    assert result["interpretation"]
+    assert result["opportunity"]
+    assert result["risk"]
+    assert result["recommendation"]
+
+    assert (
+        result["prompt_version"]
+        == "insight_generation:v1"
+    )
+
+    assert result["evidence_count"] >= 0
+
+    assert isinstance(
+        result["grounded"],
+        bool,
+    )

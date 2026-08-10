@@ -7,6 +7,7 @@ from app.agents.prioritization_agent import PrioritizationAgent
 from app.agents.signal_agent import SignalAnalysisAgent
 from app.agents.state import IntelligenceState
 from app.intelligence.scoring import BrandRelevanceScorer
+from app.services.llm import LLMProvider, MockLLMProvider
 from app.services.retrieval import FAISSRetriever
 
 class IntelligenceWorkflow:
@@ -15,6 +16,7 @@ class IntelligenceWorkflow:
     def __init__(
         self,
         retriever: FAISSRetriever,
+        llm: LLMProvider | None = None,
     ) -> None:
         self.signal_agent = SignalAnalysisAgent()
 
@@ -27,7 +29,9 @@ class IntelligenceWorkflow:
             top_k=3,
         )
 
-        self.insight_agent = InsightGenerationAgent()
+        self.insight_agent = InsightGenerationAgent(
+            llm=llm or MockLLMProvider()
+        )
 
         self.prioritization_agent = (
             PrioritizationAgent()
@@ -145,7 +149,7 @@ class IntelligenceWorkflow:
         self,
         state: IntelligenceState,
     ) -> dict[str, Any]:
-        return self.insight_agent.run(
+        result = self.insight_agent.run(
             signal=state["signal"],
             brand=state["brand"],
             relevance=state["relevance"],
@@ -154,6 +158,8 @@ class IntelligenceWorkflow:
                 [],
             ),
         )
+
+        return result
 
     def _prioritization(
         self,

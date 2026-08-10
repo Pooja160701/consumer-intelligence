@@ -59,11 +59,17 @@ class InsightGenerator:
             temperature=0.0,
         )
 
+        confidence_score = self._calculate_confidence(
+            relevance=relevance,
+            evidence=evidence,
+        )
+
         return {
             "raw_response": raw_response,
             "prompt_version": "insight_generation:v1",
             "evidence_count": len(evidence),
             "grounded": bool(evidence),
+            "confidence_score": confidence_score,
         }
 
     @staticmethod
@@ -107,3 +113,51 @@ class InsightGenerator:
             )
 
         return "\n\n".join(formatted)
+
+    @staticmethod
+    def _calculate_confidence(
+        relevance: dict[str, float],
+        evidence: list[dict[str, Any]],
+    ) -> float:
+        """
+        Calculate confidence from brand relevance and
+        retrieval evidence strength.
+
+        This is deliberately deterministic so that confidence
+        remains testable and does not depend on the LLM.
+        """
+
+        relevance_score = float(
+            relevance.get(
+                "overall_score",
+                0.0,
+            )
+        )
+
+        evidence_score = 0.0
+
+        if evidence:
+            evidence_score = float(
+                evidence[0].get(
+                    "score",
+                    0.0,
+                )
+            )
+
+        evidence_score = min(
+            max(evidence_score, 0.0),
+            1.0,
+        )
+
+        confidence = (
+            relevance_score * 0.60
+            + evidence_score * 0.40
+        )
+
+        return round(
+            min(
+                max(confidence, 0.0),
+                1.0,
+            ),
+            4,
+        )
