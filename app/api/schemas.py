@@ -21,9 +21,7 @@ class EvidenceResponse(BaseModel):
     category: str
     source_type: str
     score: float
-    metadata: dict[str, Any] = Field(
-        default_factory=dict
-    )
+    metadata: dict[str, Any]
 
 class InsightResponse(BaseModel):
     brand_id: str

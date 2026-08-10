@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.api.dependencies import get_workflow
+from fastapi import APIRouter, HTTPException
 from app.api.schemas import (
     InsightRequest,
     InsightResponse,
 )
+from app.api.dependencies import get_workflow
 
 router = APIRouter(
     prefix="/api/v1",
@@ -22,9 +22,12 @@ def health() -> dict[str, str]:
 )
 def generate_insight(
     request: InsightRequest,
-    workflow=Depends(get_workflow),
 ) -> InsightResponse:
-    """Generate an evidence-grounded brand insight."""
+    """
+    Generate an evidence-grounded brand insight.
+    """
+
+    workflow = get_workflow()
 
     try:
         result = workflow.run(
@@ -60,11 +63,21 @@ def generate_insight(
         brand_id=request.brand_id,
         brand_name=request.brand_id,
 
-        observation=result["observation"],
-        interpretation=result["interpretation"],
-        opportunity=result["opportunity"],
-        risk=result["risk"],
-        recommendation=result["recommendation"],
+        observation=result[
+            "observation"
+        ],
+        interpretation=result[
+            "interpretation"
+        ],
+        opportunity=result[
+            "opportunity"
+        ],
+        risk=result[
+            "risk"
+        ],
+        recommendation=result[
+            "recommendation"
+        ],
 
         relevance_score=float(
             relevance.get(
