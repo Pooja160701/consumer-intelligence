@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 from app.config.settings import settings
 
@@ -23,9 +23,9 @@ SessionLocal = sessionmaker(
 
 def get_db() -> Generator[Session, None, None]:
     """
-    Provide a database session for API requests.
+    Provide a database session.
 
-    The session is always closed after the request completes.
+    The session is always closed after use.
     """
     db = SessionLocal()
 
@@ -34,6 +34,19 @@ def get_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
+def check_database_connection() -> bool:
+    """Check whether PostgreSQL is reachable."""
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+        return True
+    except Exception:
+        return False
+
 def create_tables() -> None:
-    """Create database tables for local development."""
+    """Create all SQLAlchemy tables for local development."""
+    # Import models before creating tables so SQLAlchemy
+    # knows about all mapped classes.
+    from app import models  # noqa: F401
+
     Base.metadata.create_all(bind=engine)
