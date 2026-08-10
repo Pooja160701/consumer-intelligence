@@ -4,7 +4,7 @@ from app.agents.workflow import IntelligenceWorkflow
 from app.services.brand_registry import BrandRegistry
 from app.services.database import SessionLocal
 from app.services.embeddings import get_embedding_service
-from app.services.llm import MockLLMProvider
+from app.services.llm import create_llm_provider
 from app.services.retrieval import FAISSRetriever
 
 BRANDS_FILE = Path("data/brands.yaml")
@@ -40,5 +40,5 @@ def get_workflow() -> IntelligenceWorkflow:
 
     return IntelligenceWorkflow(
         retriever=retriever,
-        llm=MockLLMProvider(),
+        llm=create_llm_provider(),
     )
