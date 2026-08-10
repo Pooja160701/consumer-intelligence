@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.dependencies import get_workflow
+from app.api.dependencies import (
+    get_brand_registry,
+    get_workflow,
+)
 from app.api.schemas import (
     InsightRequest,
     InsightResponse,
@@ -23,27 +26,31 @@ def health() -> dict[str, str]:
 def generate_insight(
     request: InsightRequest,
     workflow=Depends(get_workflow),
+    brand_registry=Depends(get_brand_registry),
 ) -> InsightResponse:
     """Generate an evidence-grounded brand insight."""
 
     try:
+        brand = brand_registry.get_brand(
+            request.brand_id
+        )
+
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown brand: {request.brand_id}",
+        ) from exc
+
+    try:
         result = workflow.run(
             signal=request.signal.model_dump(),
-            brand={
-                "id": request.brand_id,
-                "name": request.brand_id,
-                "category": request.signal.category,
-                "strategic_priorities": [],
-                "keywords": [],
-                "target_consumer": [],
-                "geography": [],
-            },
+            brand=brand,
         )
 
     except Exception as exc:
         raise HTTPException(
             status_code=500,
-            detail=str(exc),
+            detail="Failed to generate intelligence insight.",
         ) from exc
 
     relevance = result.get(
@@ -58,7 +65,10 @@ def generate_insight(
 
     return InsightResponse(
         brand_id=request.brand_id,
-        brand_name=request.brand_id,
+        brand_name=brand.get(
+            "name",
+            request.brand_id,
+        ),
 
         observation=result["observation"],
         interpretation=result["interpretation"],
