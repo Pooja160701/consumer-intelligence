@@ -34,6 +34,16 @@ class MockLLMProvider(LLMProvider):
         del temperature
 
         return (
-            "Mock intelligence response generated from "
-            f"prompt: {prompt[:200]}"
+            "{"
+            '"observation": "The supplied signal is relevant '
+            'to the selected brand.",'
+            '"interpretation": "The retrieved evidence provides '
+            'context for evaluating the signal.",'
+            '"opportunity": "The brand can evaluate a targeted '
+            'response after further validation.",'
+            '"risk": "Acting without sufficient validation may '
+            'lead to unnecessary investment.",'
+            '"recommendation": "Validate the signal with '
+            'additional evidence before making a major decision."'
+            "}"
         )

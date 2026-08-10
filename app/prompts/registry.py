@@ -25,16 +25,25 @@ class PromptRegistry:
                     "{brand_name}\n\n"
                     "Signal:\n"
                     "{signal_text}\n\n"
-                    "Relevance:\n"
+                    "Relevance Scores:\n"
                     "{relevance}\n\n"
-                    "Evidence:\n"
+                    "Retrieved Evidence:\n"
                     "{evidence}\n\n"
-                    "Return a concise business insight covering:\n"
-                    "1. Observation\n"
-                    "2. Interpretation\n"
-                    "3. Opportunity\n"
-                    "4. Risk\n"
-                    "5. Recommendation"
+                    "IMPORTANT RULES:\n"
+                    "1. Use only the supplied signal and evidence.\n"
+                    "2. Do not invent statistics, sources, trends, or facts.\n"
+                    "3. Clearly distinguish observation from interpretation.\n"
+                    "4. If evidence is insufficient, say so.\n"
+                    "5. Do not claim that a source says something unless "
+                    "that information appears in the supplied evidence.\n\n"
+                    "Return ONLY valid JSON with exactly these fields:\n"
+                    "{{\n"
+                    '  "observation": "...",\n'
+                    '  "interpretation": "...",\n'
+                    '  "opportunity": "...",\n'
+                    '  "risk": "...",\n'
+                    '  "recommendation": "..."\n'
+                    "}}"
                 ),
             )
         )
