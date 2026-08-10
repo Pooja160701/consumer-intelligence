@@ -147,6 +147,10 @@ def generate_insight(
                 priority=priority,
                 status="PENDING_REVIEW",
                 evidence=evidence,
+                prompt_version=result.get(
+                    "prompt_version",
+                    "unknown",
+                ),
             )
 
             db.add(insight)

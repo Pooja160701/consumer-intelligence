@@ -102,6 +102,12 @@ class Insight(Base):
         default=list,
     )
 
+    prompt_version: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+        default="insight_generation:v1",
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

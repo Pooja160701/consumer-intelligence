@@ -9,6 +9,11 @@ class EvidenceAgent:
         retriever: FAISSRetriever,
         top_k: int = 3,
     ) -> None:
+        if top_k < 1:
+            raise ValueError(
+                "top_k must be greater than zero."
+            )
+
         self.retriever = retriever
         self.top_k = top_k
 
@@ -18,13 +23,22 @@ class EvidenceAgent:
     ) -> dict[str, Any]:
         """Retrieve evidence relevant to a signal."""
 
+        query_parts = [
+            str(signal.get("title", "")).strip(),
+            str(signal.get("text", "")).strip(),
+            str(signal.get("category", "")).strip(),
+        ]
+
         query = " ".join(
-            [
-                str(signal.get("title", "")),
-                str(signal.get("text", "")),
-                str(signal.get("category", "")),
-            ]
+            part
+            for part in query_parts
+            if part
         )
+
+        if not query:
+            return {
+                "evidence": [],
+            }
 
         results = self.retriever.search(
             query,

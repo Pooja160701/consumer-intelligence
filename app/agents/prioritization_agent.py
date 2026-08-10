@@ -15,9 +15,15 @@ class PrioritizationAgent:
         relevance: dict[str, float],
         confidence_score: float,
     ) -> dict[str, Any]:
-        relevance_score = relevance.get(
-            "overall_score",
-            0.0,
+        relevance_score = float(
+            relevance.get(
+                "overall_score",
+                0.0,
+            )
+        )
+
+        confidence_score = float(
+            confidence_score
         )
 
         priority_score = (
@@ -26,7 +32,10 @@ class PrioritizationAgent:
         )
 
         priority_score = round(
-            min(priority_score, 1.0),
+            min(
+                max(priority_score, 0.0),
+                1.0,
+            ),
             4,
         )
 

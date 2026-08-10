@@ -7,6 +7,7 @@ from app.models.insight import Insight
 from app.models.signal import Signal
 from app.models.source import Source
 from app.models.review import HumanReview
+from sqlalchemy import select
 
 def create_test_data() -> tuple[str, str, str]:
     """
@@ -45,12 +46,12 @@ def create_test_data() -> tuple[str, str, str]:
         db.flush()
 
         brand = Brand(
+            # FIX: use the generated brand_id
             id=brand_id,
-            name="Review Test Brand",
+            name="Prompt Version Test Brand",
             category="healthy_snacks",
             description=(
-                "Synthetic brand used for human-review "
-                "integration testing."
+                "Synthetic brand used for integration testing."
             ),
             configuration={
                 "keywords": [
@@ -100,9 +101,7 @@ def create_test_data() -> tuple[str, str, str]:
             id=insight_id,
             brand_id=brand_id,
             signal_id=signal_id,
-            summary=(
-                "Protein snack demand is increasing."
-            ),
+            summary="Protein snack demand is increasing.",
             observation=(
                 "Demand for protein snacks is increasing."
             ),
@@ -128,6 +127,7 @@ def create_test_data() -> tuple[str, str, str]:
             priority="P1",
             status="PENDING_REVIEW",
             evidence=[],
+            prompt_version="insight_generation:v1",
         )
 
         db.add(insight)
@@ -152,29 +152,16 @@ def cleanup_test_data(
     signal_id: str,
     insight_id: str,
 ) -> None:
-    """Remove integration-test data in foreign-key dependency order."""
+    """Clean up integration-test data in FK dependency order."""
 
     db = SessionLocal()
 
     try:
-        signal = db.get(
-            Signal,
-            signal_id,
-        )
-
-        source_id = (
-            signal.source_id
-            if signal is not None
-            else None
-        )
-
-        reviews = (
-            db.query(HumanReview)
-            .filter(
+        reviews = db.scalars(
+            select(HumanReview).where(
                 HumanReview.insight_id == insight_id
             )
-            .all()
-        )
+        ).all()
 
         for review in reviews:
             db.delete(review)
@@ -196,7 +183,10 @@ def cleanup_test_data(
             signal_id,
         )
 
+        source_id = None
+
         if signal is not None:
+            source_id = signal.source_id
             db.delete(signal)
 
         db.flush()
@@ -209,6 +199,8 @@ def cleanup_test_data(
 
             if source is not None:
                 db.delete(source)
+
+        db.flush()
 
         brand = db.get(
             Brand,
@@ -226,10 +218,14 @@ def cleanup_test_data(
 
     finally:
         db.close()
+        app.dependency_overrides.clear()
 
 def test_review_can_be_approved() -> None:
     """
     A persisted insight can receive an APPROVE decision.
+
+    The review API must also transition the insight status
+    from PENDING_REVIEW to APPROVED.
     """
 
     brand_id, signal_id, insight_id = create_test_data()
@@ -246,6 +242,9 @@ def test_review_can_be_approved() -> None:
             },
         )
 
+        print("STATUS:", response.status_code)
+        print("BODY:", response.text)
+
         assert response.status_code == 200
 
         body = response.json()
@@ -253,6 +252,20 @@ def test_review_can_be_approved() -> None:
         assert body["insight_id"] == insight_id
         assert body["reviewer_action"] == "APPROVE"
         assert body["status"] == "RECORDED"
+
+        db = SessionLocal()
+
+        try:
+            insight = db.get(
+                Insight,
+                insight_id,
+            )
+
+            assert insight is not None
+            assert insight.status == "APPROVED"
+
+        finally:
+            db.close()
 
     finally:
         cleanup_test_data(
@@ -264,6 +277,9 @@ def test_review_can_be_approved() -> None:
 def test_review_can_be_rejected() -> None:
     """
     A persisted insight can receive a REJECT decision.
+
+    The review API must also transition the insight status
+    from PENDING_REVIEW to REJECTED.
     """
 
     brand_id, signal_id, insight_id = create_test_data()
@@ -287,6 +303,20 @@ def test_review_can_be_rejected() -> None:
         assert body["reviewer_action"] == "REJECT"
         assert body["status"] == "RECORDED"
 
+        db = SessionLocal()
+
+        try:
+            insight = db.get(
+                Insight,
+                insight_id,
+            )
+
+            assert insight is not None
+            assert insight.status == "REJECTED"
+
+        finally:
+            db.close()
+
     finally:
         cleanup_test_data(
             brand_id,
@@ -297,6 +327,9 @@ def test_review_can_be_rejected() -> None:
 def test_review_can_modify_insight() -> None:
     """
     A reviewer can mark an insight for modification.
+
+    The review API must also transition the insight status
+    from PENDING_REVIEW to NEEDS_MODIFICATION.
     """
 
     brand_id, signal_id, insight_id = create_test_data()
@@ -319,12 +352,27 @@ def test_review_can_modify_insight() -> None:
 
         assert body["reviewer_action"] == "MODIFY"
 
+        db = SessionLocal()
+
+        try:
+            insight = db.get(
+                Insight,
+                insight_id,
+            )
+
+            assert insight is not None
+            assert insight.status == "NEEDS_MODIFICATION"
+
+        finally:
+            db.close()
+
     finally:
         cleanup_test_data(
             brand_id,
             signal_id,
             insight_id,
         )
+
 
 def test_review_returns_404_for_unknown_insight() -> None:
     """
@@ -342,6 +390,7 @@ def test_review_returns_404_for_unknown_insight() -> None:
     )
 
     assert response.status_code == 404
+
 
 def test_review_is_persisted() -> None:
     """
@@ -366,21 +415,21 @@ def test_review_is_persisted() -> None:
 
         review_id = response.json()["id"]
 
-        from app.models.review import HumanReview
-
         db = SessionLocal()
 
-        review = db.get(
-            HumanReview,
-            review_id,
-        )
+        try:
+            review = db.get(
+                HumanReview,
+                review_id,
+            )
 
-        assert review is not None
-        assert review.insight_id == insight_id
-        assert review.reviewer_action == "APPROVE"
-        assert review.comment == "Approved after review."
+            assert review is not None
+            assert review.insight_id == insight_id
+            assert review.reviewer_action == "APPROVE"
+            assert review.comment == "Approved after review."
 
-        db.close()
+        finally:
+            db.close()
 
     finally:
         cleanup_test_data(
@@ -388,3 +437,41 @@ def test_review_is_persisted() -> None:
             signal_id,
             insight_id,
         )
+
+def cleanup_prompt_version_test_data(
+    source_id: str,
+    signal_id: str,
+    insight_id: str | None,
+) -> None:
+    db = SessionLocal()
+
+    try:
+        if insight_id is not None:
+            insight = db.get(
+                Insight,
+                insight_id,
+            )
+
+            if insight is not None:
+                db.delete(insight)
+
+        signal = db.get(
+            Signal,
+            signal_id,
+        )
+
+        if signal is not None:
+            db.delete(signal)
+
+        source = db.get(
+            Source,
+            source_id,
+        )
+
+        if source is not None:
+            db.delete(source)
+
+        db.commit()
+
+    finally:
+        db.close()
