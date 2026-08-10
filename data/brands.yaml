@@ -1,0 +1,726 @@
+brands:
+
+  - id: brand_001
+    name: VitaBite
+    category: healthy_snacks
+    description: Health-focused snack brand targeting urban Indian consumers.
+    target_consumer:
+      - young_adults
+      - working_professionals
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - health
+      - protein
+      - convenience
+      - clean_label
+    keywords:
+      - protein
+      - healthy snacks
+      - high protein
+      - clean label
+      - low sugar
+    exclusions:
+      - tobacco
+      - alcohol
+
+  - id: brand_002
+    name: FreshSip
+    category: beverages
+    description: Convenient beverage brand focused on everyday hydration and wellness.
+    target_consumer:
+      - young_adults
+      - families
+      - working_professionals
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - convenience
+      - hydration
+      - natural ingredients
+      - low sugar
+    keywords:
+      - beverages
+      - hydration
+      - natural drinks
+      - low sugar
+      - functional beverages
+    exclusions:
+      - tobacco
+
+  - id: brand_003
+    name: DailyHarvest
+    category: packaged_foods
+    description: Convenient packaged food brand for everyday family consumption.
+    target_consumer:
+      - families
+      - working_professionals
+      - students
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - convenience
+      - affordability
+      - nutrition
+    keywords:
+      - packaged food
+      - convenience food
+      - nutrition
+      - affordable food
+    exclusions: []
+
+  - id: brand_004
+    name: GlowNaturals
+    category: personal_care
+    description: Natural personal care brand focused on ingredient-conscious consumers.
+    target_consumer:
+      - young_adults
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - natural ingredients
+      - clean beauty
+      - sustainability
+    keywords:
+      - natural ingredients
+      - clean beauty
+      - skincare
+      - sustainability
+    exclusions: []
+
+  - id: brand_005
+    name: ActiveFuel
+    category: sports_nutrition
+    description: Sports nutrition brand focused on active and fitness-oriented consumers.
+    target_consumer:
+      - fitness_consumers
+      - athletes
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - protein
+      - performance
+      - recovery
+      - convenience
+    keywords:
+      - protein
+      - sports nutrition
+      - recovery
+      - fitness
+      - performance
+    exclusions: []
+
+  - id: brand_006
+    name: NutriNest
+    category: family_nutrition
+    description: Family nutrition brand focused on balanced everyday eating.
+    target_consumer:
+      - families
+      - parents
+      - children
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - nutrition
+      - balanced diet
+      - affordability
+    keywords:
+      - family nutrition
+      - balanced diet
+      - vitamins
+      - nutrition
+    exclusions: []
+
+  - id: brand_007
+    name: UrbanCrunch
+    category: snacks
+    description: Modern snack brand targeting urban consumers seeking convenient options.
+    target_consumer:
+      - young_adults
+      - students
+      - working_professionals
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - convenience
+      - taste
+      - affordability
+    keywords:
+      - snacks
+      - convenient snacks
+      - crunchy snacks
+      - affordable snacks
+    exclusions: []
+
+  - id: brand_008
+    name: PurePour
+    category: functional_beverages
+    description: Functional beverage brand focused on wellness-oriented consumption.
+    target_consumer:
+      - young_adults
+      - fitness_consumers
+      - working_professionals
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - hydration
+      - wellness
+      - natural ingredients
+    keywords:
+      - functional beverage
+      - hydration
+      - wellness drink
+      - electrolytes
+      - natural drink
+    exclusions: []
+
+  - id: brand_009
+    name: GreenPlate
+    category: plant_based_foods
+    description: Plant-based food brand for consumers exploring sustainable eating.
+    target_consumer:
+      - young_adults
+      - health_conscious_consumers
+      - environmentally_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - plant based
+      - sustainability
+      - nutrition
+    keywords:
+      - plant based
+      - vegan
+      - sustainability
+      - alternative protein
+    exclusions: []
+
+  - id: brand_010
+    name: QuickBowl
+    category: convenience_foods
+    description: Ready-to-eat food brand focused on convenience for busy consumers.
+    target_consumer:
+      - students
+      - working_professionals
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - convenience
+      - affordability
+      - speed
+    keywords:
+      - ready to eat
+      - instant meals
+      - convenience food
+      - quick meals
+    exclusions: []
+
+  - id: brand_011
+    name: NatureGlow
+    category: beauty_wellness
+    description: Beauty and wellness brand centered around naturally sourced ingredients.
+    target_consumer:
+      - young_adults
+      - women
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - natural beauty
+      - clean ingredients
+      - wellness
+    keywords:
+      - natural beauty
+      - clean ingredients
+      - wellness
+      - skincare
+    exclusions: []
+
+  - id: brand_012
+    name: FitPulse
+    category: fitness_wellness
+    description: Fitness wellness brand serving active lifestyle consumers.
+    target_consumer:
+      - athletes
+      - fitness_consumers
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - fitness
+      - recovery
+      - performance
+    keywords:
+      - fitness
+      - recovery
+      - workout
+      - performance
+      - active lifestyle
+    exclusions: []
+
+  - id: brand_013
+    name: GrainStory
+    category: staples
+    description: Everyday staple food brand focused on grains and nutritious basics.
+    target_consumer:
+      - families
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - nutrition
+      - affordability
+      - quality
+    keywords:
+      - grains
+      - staples
+      - whole grains
+      - nutrition
+    exclusions: []
+
+  - id: brand_014
+    name: SipWell
+    category: hydration
+    description: Hydration-focused beverage brand for everyday consumers.
+    target_consumer:
+      - families
+      - young_adults
+      - working_professionals
+    geography:
+      - india
+    strategic_priorities:
+      - hydration
+      - convenience
+      - wellness
+    keywords:
+      - hydration
+      - water
+      - electrolytes
+      - wellness
+    exclusions: []
+
+  - id: brand_015
+    name: SnackLab
+    category: innovative_snacks
+    description: Experimental snack brand focused on emerging consumer preferences.
+    target_consumer:
+      - young_adults
+      - students
+      - early_adopters
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - innovation
+      - new flavors
+      - convenience
+    keywords:
+      - snacks
+      - new flavors
+      - food innovation
+      - emerging trends
+    exclusions: []
+
+  - id: brand_016
+    name: EarthKind
+    category: sustainable_products
+    description: Consumer brand focused on sustainability and environmentally responsible products.
+    target_consumer:
+      - environmentally_conscious_consumers
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - sustainability
+      - low waste
+      - responsible sourcing
+    keywords:
+      - sustainability
+      - eco friendly
+      - low waste
+      - responsible sourcing
+    exclusions: []
+
+  - id: brand_017
+    name: FamilyFirst
+    category: family_foods
+    description: Family-oriented food brand focused on everyday household needs.
+    target_consumer:
+      - families
+      - parents
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - affordability
+      - nutrition
+      - convenience
+    keywords:
+      - family food
+      - children
+      - nutrition
+      - household
+    exclusions: []
+
+  - id: brand_018
+    name: SmartMeal
+    category: meal_solutions
+    description: Convenient meal solution brand for time-constrained consumers.
+    target_consumer:
+      - working_professionals
+      - students
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - convenience
+      - nutrition
+      - speed
+    keywords:
+      - meal solutions
+      - quick meals
+      - ready meals
+      - convenience
+    exclusions: []
+
+  - id: brand_019
+    name: HerbAura
+    category: herbal_wellness
+    description: Herbal wellness brand inspired by traditional and natural ingredients.
+    target_consumer:
+      - health_conscious_consumers
+      - young_adults
+      - families
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - herbal ingredients
+      - wellness
+      - natural products
+    keywords:
+      - herbal
+      - ayurvedic
+      - natural wellness
+      - plant ingredients
+    exclusions: []
+
+  - id: brand_020
+    name: EnergyNest
+    category: energy_nutrition
+    description: Energy nutrition brand targeting active and busy consumers.
+    target_consumer:
+      - working_professionals
+      - athletes
+      - students
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - energy
+      - performance
+      - convenience
+    keywords:
+      - energy
+      - performance
+      - nutrition
+      - active lifestyle
+    exclusions: []
+
+  - id: brand_021
+    name: CleanKitchen
+    category: clean_foods
+    description: Clean-label food brand focused on transparent ingredients.
+    target_consumer:
+      - health_conscious_consumers
+      - families
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - clean label
+      - transparency
+      - natural ingredients
+    keywords:
+      - clean label
+      - natural ingredients
+      - transparent ingredients
+      - minimally processed
+    exclusions: []
+
+  - id: brand_022
+    name: JoyBowl
+    category: family_meals
+    description: Family meal brand focused on enjoyable and convenient meal experiences.
+    target_consumer:
+      - families
+      - children
+      - working_professionals
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - convenience
+      - taste
+      - family
+    keywords:
+      - family meals
+      - meal ideas
+      - convenient meals
+      - food
+    exclusions: []
+
+  - id: brand_023
+    name: DailyGlow
+    category: skincare
+    description: Everyday skincare brand designed for simple personal care routines.
+    target_consumer:
+      - young_adults
+      - working_professionals
+      - women
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - simplicity
+      - natural ingredients
+      - affordability
+    keywords:
+      - skincare
+      - personal care
+      - natural ingredients
+      - daily routine
+    exclusions: []
+
+  - id: brand_024
+    name: PowerGrain
+    category: nutrition_staples
+    description: Nutrition-focused staple brand emphasizing whole grains and protein.
+    target_consumer:
+      - families
+      - fitness_consumers
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - protein
+      - whole grains
+      - nutrition
+    keywords:
+      - whole grains
+      - protein
+      - nutrition
+      - healthy staples
+    exclusions: []
+
+  - id: brand_025
+    name: UrbanWell
+    category: urban_wellness
+    description: Wellness brand designed around fast-paced urban lifestyles.
+    target_consumer:
+      - young_adults
+      - working_professionals
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - convenience
+      - wellness
+      - stress management
+    keywords:
+      - urban wellness
+      - wellness
+      - convenience
+      - healthy lifestyle
+    exclusions: []
+
+  - id: brand_026
+    name: FarmFreshly
+    category: fresh_foods
+    description: Fresh food brand focused on quality and farm-linked sourcing.
+    target_consumer:
+      - families
+      - health_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - freshness
+      - quality
+      - responsible sourcing
+    keywords:
+      - fresh food
+      - farm fresh
+      - natural
+      - responsible sourcing
+    exclusions: []
+
+  - id: brand_027
+    name: NutriGo
+    category: nutrition_convenience
+    description: Portable nutrition brand for consumers with busy lifestyles.
+    target_consumer:
+      - students
+      - working_professionals
+      - fitness_consumers
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - convenience
+      - protein
+      - nutrition
+    keywords:
+      - portable nutrition
+      - protein
+      - healthy snacks
+      - on the go
+    exclusions: []
+
+  - id: brand_028
+    name: EcoBite
+    category: sustainable_snacks
+    description: Snack brand combining convenient food with sustainability goals.
+    target_consumer:
+      - young_adults
+      - environmentally_conscious_consumers
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - sustainability
+      - snacks
+      - clean label
+    keywords:
+      - sustainable snacks
+      - eco friendly
+      - clean label
+      - snacks
+    exclusions: []
+
+  - id: brand_029
+    name: WellnessWave
+    category: wellness_beverages
+    description: Wellness beverage brand focused on functional and natural drinks.
+    target_consumer:
+      - health_conscious_consumers
+      - young_adults
+      - fitness_consumers
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - functional nutrition
+      - hydration
+      - natural ingredients
+    keywords:
+      - wellness beverage
+      - functional drinks
+      - hydration
+      - natural ingredients
+    exclusions: []
+
+  - id: brand_030
+    name: ProteinPeak
+    category: protein_nutrition
+    description: Protein-focused nutrition brand for active consumers.
+    target_consumer:
+      - athletes
+      - fitness_consumers
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - protein
+      - performance
+      - recovery
+    keywords:
+      - protein
+      - high protein
+      - recovery
+      - sports nutrition
+    exclusions: []
+
+  - id: brand_031
+    name: FreshRoots
+    category: natural_foods
+    description: Natural food brand focused on minimally processed ingredients.
+    target_consumer:
+      - families
+      - health_conscious_consumers
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+      - tier_2_cities
+    strategic_priorities:
+      - natural ingredients
+      - clean label
+      - nutrition
+    keywords:
+      - natural foods
+      - clean label
+      - minimally processed
+      - healthy food
+    exclusions: []
+
+  - id: brand_032
+    name: MoveWell
+    category: active_lifestyle
+    description: Active lifestyle brand serving consumers focused on fitness and wellbeing.
+    target_consumer:
+      - fitness_consumers
+      - athletes
+      - young_adults
+    geography:
+      - india
+      - tier_1_cities
+    strategic_priorities:
+      - fitness
+      - wellness
+      - performance
+      - recovery
+    keywords:
+      - fitness
+      - active lifestyle
+      - wellness
+      - recovery
+      - performance
+    exclusions: []
