@@ -1,5 +1,9 @@
 from typing import Any
 from pydantic import BaseModel, Field
+from app.api.schemas.review import (
+    ReviewRequest,
+    ReviewResponse,
+)
 
 class SignalRequest(BaseModel):
     title: str = Field(min_length=1)
@@ -40,6 +44,8 @@ class InsightResponse(BaseModel):
 
     priority_score: float
     priority: str
+    
+    insight_id: str
 
     evidence_count: int
     grounded: bool
