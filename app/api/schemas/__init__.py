@@ -1,8 +1,8 @@
 from typing import Any
 from pydantic import BaseModel, Field
 from app.api.schemas.review import (
-    ReviewRequest,
-    ReviewResponse,
+    ReviewRequest as ReviewRequest,
+    ReviewResponse as ReviewResponse,
 )
 
 class SignalRequest(BaseModel):

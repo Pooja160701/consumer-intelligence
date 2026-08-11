@@ -1,0 +1,65 @@
+[
+  {
+    "id": "gold_001",
+    "signal": {
+      "title": "High protein snacks are gaining popularity",
+      "text": "Consumers increasingly seek convenient high-protein snacks.",
+      "category": "healthy_snacks",
+      "signal_type": "consumer_trend",
+      "metadata": {
+        "region": "India"
+      }
+    },
+    "expected_category": "healthy_snacks",
+    "expected_grounded": true,
+    "required_fields": [
+      "observation",
+      "interpretation",
+      "opportunity",
+      "risk",
+      "recommendation"
+    ]
+  },
+  {
+    "id": "gold_002",
+    "signal": {
+      "title": "Consumers seek convenient breakfast options",
+      "text": "Working professionals increasingly prefer convenient breakfast products.",
+      "category": "convenience_food",
+      "signal_type": "consumer_trend",
+      "metadata": {
+        "region": "India"
+      }
+    },
+    "expected_category": "convenience_food",
+    "expected_grounded": true,
+    "required_fields": [
+      "observation",
+      "interpretation",
+      "opportunity",
+      "risk",
+      "recommendation"
+    ]
+  },
+  {
+    "id": "gold_003",
+    "signal": {
+      "title": "Premium functional beverages attract consumers",
+      "text": "Consumers show growing interest in functional beverages with clear benefits.",
+      "category": "functional_beverages",
+      "signal_type": "consumer_trend",
+      "metadata": {
+        "region": "India"
+      }
+    },
+    "expected_category": "functional_beverages",
+    "expected_grounded": true,
+    "required_fields": [
+      "observation",
+      "interpretation",
+      "opportunity",
+      "risk",
+      "recommendation"
+    ]
+  }
+]

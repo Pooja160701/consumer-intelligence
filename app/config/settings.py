@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     debug: bool = True
 
-    api_host: str = "0.0.0.0"
+    api_host: str = "0.0.0.0"  # nosec B104
     api_port: int = 8000
 
     postgres_host: str = "localhost"
