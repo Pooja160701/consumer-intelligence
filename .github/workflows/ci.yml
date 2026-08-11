@@ -16,6 +16,21 @@ jobs:
     name: Lint and Test
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: think9
+          POSTGRES_PASSWORD: think9_dev_password
+          POSTGRES_DB: think9_intelligence
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U think9 -d think9_intelligence"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -36,6 +51,12 @@ jobs:
       - name: Tests
         env:
           LLM_PROVIDER: mock
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: think9_intelligence
+          POSTGRES_USER: think9
+          POSTGRES_PASSWORD: think9_dev_password
+          DATABASE_URL: postgresql+psycopg://think9:think9_dev_password@localhost:5432/think9_intelligence
         run: pytest -q
 
   dependency-security:
