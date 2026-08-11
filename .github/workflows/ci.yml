@@ -45,6 +45,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run database migrations
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: think9_intelligence
+          POSTGRES_USER: think9
+          POSTGRES_PASSWORD: think9_dev_password
+          DATABASE_URL: postgresql+psycopg://think9:think9_dev_password@localhost:5432/think9_intelligence
+        run: alembic upgrade head
+
       - name: Ruff
         run: ruff check .
 
