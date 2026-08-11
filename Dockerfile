@@ -8,8 +8,9 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN python -m pip install --upgrade pip setuptools \
+    && python -m pip install -r requirements.txt \
+    && python -m pip install --upgrade "msgpack>=1.2.1" "setuptools>=78.1.1"
 
 COPY app ./app
 COPY alembic ./alembic
