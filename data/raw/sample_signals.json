@@ -1,0 +1,93 @@
+[
+  {
+    "source_type": "trend",
+    "signal_type": "consumer_trend",
+    "title": "High-protein snacks gain consumer interest",
+    "text": "Indian consumers are increasingly interested in convenient high-protein snacks and healthier alternatives.",
+    "category": "healthy_snacks",
+    "url": "https://example.com/trends/high-protein-snacks",
+    "published_at": "2026-08-01T10:00:00Z",
+    "metadata": {
+      "region": "India",
+      "trend_strength": 0.86
+    }
+  },
+  {
+    "source_type": "trend",
+    "signal_type": "consumer_trend",
+    "title": "Low-sugar beverages attract wellness consumers",
+    "text": "Consumers are showing increased interest in low-sugar functional beverages with hydration and wellness benefits.",
+    "category": "beverages",
+    "url": "https://example.com/trends/low-sugar-beverages",
+    "published_at": "2026-08-02T09:30:00Z",
+    "metadata": {
+      "region": "India",
+      "trend_strength": 0.81
+    }
+  },
+  {
+    "source_type": "consumer_review",
+    "signal_type": "consumer_feedback",
+    "title": "Consumers request more convenient healthy meals",
+    "text": "Consumer feedback indicates growing demand for convenient meal options that still provide nutritional value.",
+    "category": "convenience_foods",
+    "url": "https://example.com/reviews/convenient-meals",
+    "published_at": "2026-08-03T12:00:00Z",
+    "metadata": {
+      "region": "India",
+      "sentiment": "positive"
+    }
+  },
+  {
+    "source_type": "trend",
+    "signal_type": "ingredient_trend",
+    "title": "Natural ingredients become more important",
+    "text": "Consumers increasingly examine ingredient lists and prefer products using recognizable natural ingredients.",
+    "category": "clean_foods",
+    "url": "https://example.com/trends/natural-ingredients",
+    "published_at": "2026-08-04T08:15:00Z",
+    "metadata": {
+      "region": "India",
+      "trend_strength": 0.79
+    }
+  },
+  {
+    "source_type": "consumer_review",
+    "signal_type": "consumer_feedback",
+    "title": "Fitness consumers prioritize recovery nutrition",
+    "text": "Active consumers increasingly look for products supporting post-workout recovery and protein intake.",
+    "category": "sports_nutrition",
+    "url": "https://example.com/reviews/recovery-nutrition",
+    "published_at": "2026-08-05T11:20:00Z",
+    "metadata": {
+      "region": "India",
+      "sentiment": "positive"
+    }
+  },
+  {
+    "source_type": "trend",
+    "signal_type": "sustainability_trend",
+    "title": "Sustainable packaging receives more attention",
+    "text": "Consumers are paying more attention to packaging waste and environmentally responsible product choices.",
+    "category": "sustainable_products",
+    "url": "https://example.com/trends/sustainable-packaging",
+    "published_at": "2026-08-06T14:45:00Z",
+    "metadata": {
+      "region": "India",
+      "trend_strength": 0.74
+    }
+  },
+  {
+    "source_type": "trend",
+    "signal_type": "consumer_trend",
+    "title": "High-protein snacks gain consumer interest",
+    "text": "Indian consumers are increasingly interested in convenient high-protein snacks and healthier alternatives.",
+    "category": "healthy_snacks",
+    "url": "https://example.com/trends/high-protein-snacks",
+    "published_at": "2026-08-01T10:00:00Z",
+    "metadata": {
+      "region": "India",
+      "trend_strength": 0.86
+    }
+  }
+]
