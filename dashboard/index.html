@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Think9 Consumer Intelligence OS</title>
+
+    <link
+        rel="stylesheet"
+        href="/dashboard/styles.css"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="topbar">
+        <div>
+            <div class="eyebrow">THINK9</div>
+            <h1>Consumer Intelligence OS</h1>
+            <p>
+                Evidence-grounded signals → insights → human decisions
+            </p>
+        </div>
+
+        <div id="health" class="status">
+            Checking API...
+        </div>
+    </header>
+
+    <main>
+
+        <section class="grid">
+
+            <div class="card">
+                <div class="card-title">BRAND</div>
+
+                <select id="brand">
+                    <option value="brand_001">
+                        VitaBite
+                    </option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="card-title">SIGNAL TYPE</div>
+
+                <select id="signalType">
+                    <option value="consumer_trend">
+                        Consumer Trend
+                    </option>
+                    <option value="market_signal">
+                        Market Signal
+                    </option>
+                    <option value="consumer_feedback">
+                        Consumer Feedback
+                    </option>
+                </select>
+            </div>
+
+        </section>
+
+        <section class="card signal-card">
+
+            <div class="card-header">
+                <div>
+                    <div class="card-title">
+                        CONSUMER SIGNAL
+                    </div>
+
+                    <h2>
+                        Generate intelligence from a signal
+                    </h2>
+                </div>
+
+                <span class="badge">
+                    AI PIPELINE
+                </span>
+            </div>
+
+            <label>
+                Signal title
+            </label>
+
+            <input
+                id="title"
+                value="High protein snacks are gaining popularity"
+            >
+
+            <label>
+                Signal
+            </label>
+
+            <textarea id="signal">Consumers are increasingly looking for convenient high-protein snacks with healthier ingredients.</textarea>
+
+            <label>
+                Category
+            </label>
+
+            <input
+                id="category"
+                value="healthy_snacks"
+            >
+
+            <button
+                id="generate"
+                onclick="generateInsight()"
+            >
+                Generate Insight
+            </button>
+
+        </section>
+
+        <section id="loading" class="card hidden">
+            <div class="loader"></div>
+            Running intelligence workflow...
+        </section>
+
+        <section id="result" class="hidden">
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <span>Priority</span>
+                    <strong id="priority">—</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Relevance</span>
+                    <strong id="relevance">—</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Confidence</span>
+                    <strong id="confidence">—</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Evidence</span>
+                    <strong id="evidenceCount">—</strong>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+                        <div class="card-title">
+                            GENERATED INSIGHT
+                        </div>
+
+                        <h2 id="insightSummary"></h2>
+                    </div>
+
+                    <span
+                        id="grounded"
+                        class="badge"
+                    >
+                    </span>
+
+                </div>
+
+                <div class="content-grid">
+
+                    <div>
+                        <h3>Observation</h3>
+                        <p id="observation"></p>
+                    </div>
+
+                    <div>
+                        <h3>Interpretation</h3>
+                        <p id="interpretation"></p>
+                    </div>
+
+                    <div>
+                        <h3>Opportunity</h3>
+                        <p id="opportunity"></p>
+                    </div>
+
+                    <div>
+                        <h3>Risk</h3>
+                        <p id="risk"></p>
+                    </div>
+
+                    <div class="full">
+                        <h3>Recommendation</h3>
+                        <p id="recommendation"></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">
+                            TRACEABILITY
+                        </div>
+
+                        <h2>Evidence & Prompt Version</h2>
+                    </div>
+                </div>
+
+                <div class="trace">
+
+                    <div>
+                        <span>Insight ID</span>
+                        <code id="insightId"></code>
+                    </div>
+
+                    <div>
+                        <span>Prompt</span>
+                        <code id="promptVersion"></code>
+                    </div>
+
+                </div>
+
+                <div id="evidence" class="evidence"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/dashboard/app.js"></script>
+
+</body>
+</html>

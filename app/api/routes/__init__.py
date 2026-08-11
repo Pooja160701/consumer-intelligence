@@ -1,4 +1,5 @@
 from uuid import uuid4
+from hashlib import sha256
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.api.dependencies import (
@@ -10,7 +11,10 @@ from app.api.schemas import (
     InsightRequest,
     InsightResponse,
 )
+from app.models.brand import Brand
 from app.models.insight import Insight
+from app.models.signal import Signal
+from app.models.source import Source
 from app.services.database import get_db
 
 router = APIRouter(
@@ -43,11 +47,12 @@ def generate_insight(
     """
     Generate an evidence-grounded brand insight.
 
-    The endpoint:
-    1. Resolves the requested brand from BrandRegistry.
-    2. Runs the intelligence workflow.
-    3. Persists the generated insight.
-    4. Returns the structured intelligence response.
+    Flow:
+        1. Resolve brand.
+        2. Resolve or persist the incoming signal.
+        3. Run intelligence workflow.
+        4. Persist generated insight.
+        5. Return structured intelligence.
     """
 
     try:
@@ -64,18 +69,185 @@ def generate_insight(
             ),
         ) from exc
 
+    db_brand = db.get(
+        Brand,
+        request.brand_id,
+    )
+
+    if db_brand is None:
+        db_brand = Brand(
+            id=brand["id"],
+            name=brand["name"],
+            category=brand.get(
+                "category",
+                "general",
+            ),
+            description=brand.get(
+                "description",
+            ),
+            configuration=brand.get(
+                "configuration",
+                {},
+            ),
+        )
+
+        db.add(db_brand)
+        db.flush()
+
+    signal_data = request.signal.model_dump()
+
+    metadata = signal_data.get(
+        "metadata",
+        {},
+    )
+
+    signal_id = metadata.get(
+        "signal_id"
+    )
+
     try:
+        if signal_id:
+            signal = db.get(
+                Signal,
+                signal_id,
+            )
+
+            if signal is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail=(
+                        f"Signal not found: "
+                        f"{signal_id}"
+                    ),
+                )
+
+        else:
+            signal_text = signal_data.get(
+                "text",
+                "",
+            )
+
+            signal_title = signal_data.get(
+                "title",
+                "Consumer signal",
+            )
+
+            source_value = metadata.get(
+                "source",
+                "dashboard",
+            )
+
+            region = metadata.get(
+                "region",
+                "unknown",
+            )
+
+            content_hash = sha256(
+                (
+                    f"{signal_title}|"
+                    f"{signal_text}|"
+                    f"{source_value}|"
+                    f"{region}"
+                ).encode("utf-8")
+            ).hexdigest()
+
+            source_id = (
+                f"api_source_"
+                f"{content_hash[:32]}"
+            )
+
+            signal_id = (
+                f"api_signal_"
+                f"{content_hash[:32]}"
+            )
+
+            source = db.get(
+                Source,
+                source_id,
+            )
+
+            if source is None:
+                source = Source(
+                    id=source_id,
+                    source_type=str(
+                        source_value
+                    ),
+                    url=None,
+                    title=signal_title,
+                    content_hash=content_hash,
+                )
+
+                db.add(source)
+                db.flush()
+
+            signal = db.get(
+                Signal,
+                signal_id,
+            )
+
+            if signal is None:
+                signal = Signal(
+                    id=signal_id,
+                    source_id=source_id,
+                    signal_type=signal_data.get(
+                        "signal_type",
+                        "consumer_trend",
+                    ),
+                    category=signal_data.get(
+                        "category",
+                        "general",
+                    ),
+                    title=signal_title,
+                    text=signal_text,
+                    metadata_json=metadata,
+                    confidence=1.0,
+                )
+
+                db.add(signal)
+                db.flush()
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except Exception as exc:
+        db.rollback()
+
+        print(
+            "INSIGHT WORKFLOW ERROR:",
+            repr(exc),
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Failed to generate intelligence insight."
+            ),
+        ) from exc
+
+    try:
+        signal_data["metadata"] = {
+            **signal_data.get("metadata", {}),
+            "signal_id": signal_id,
+        }
+
         result = workflow.run(
-            signal=request.signal.model_dump(),
+            signal=signal_data,
             brand=brand,
         )
 
     except Exception as exc:
+        db.rollback()
+
+        print(
+            "INSIGHT WORKFLOW ERROR:",
+            repr(exc),
+        )
+
         raise HTTPException(
             status_code=500,
             detail=(
-                "Failed to generate "
-                "intelligence insight."
+                "Failed to generate intelligence insight."
             ),
         ) from exc
 
@@ -87,10 +259,6 @@ def generate_insight(
     evidence = result.get(
         "evidence",
         [],
-    )
-
-    insight_id = (
-        f"insight_{uuid4().hex}"
     )
 
     relevance_score = float(
@@ -119,54 +287,59 @@ def generate_insight(
         "P4",
     )
 
-    signal_id = request.signal.metadata.get(
-        "signal_id"
+    prompt_version = result.get(
+        "prompt_version",
+        "unknown",
     )
 
-    if signal_id:
-        try:
-            insight = Insight(
-                id=insight_id,
-                brand_id=brand["id"],
-                signal_id=signal_id,
-                summary=result["observation"],
-                observation=result["observation"],
-                interpretation=result[
-                    "interpretation"
-                ],
-                opportunity=result[
-                    "opportunity"
-                ],
-                risk=result["risk"],
-                recommendation=result[
-                    "recommendation"
-                ],
-                impact_score=priority_score,
-                relevance_score=relevance_score,
-                confidence_score=confidence_score,
-                priority=priority,
-                status="PENDING_REVIEW",
-                evidence=evidence,
-                prompt_version=result.get(
-                    "prompt_version",
-                    "unknown",
-                ),
-            )
+    insight_id = (
+        f"insight_{uuid4().hex}"
+    )
 
-            db.add(insight)
-            db.commit()
-            db.refresh(insight)
+    try:
+        insight = Insight(
+            id=insight_id,
+            brand_id=brand["id"],
+            signal_id=signal_id,
+            summary=result["observation"],
+            observation=result["observation"],
+            interpretation=result[
+                "interpretation"
+            ],
+            opportunity=result[
+                "opportunity"
+            ],
+            risk=result["risk"],
+            recommendation=result[
+                "recommendation"
+            ],
+            impact_score=priority_score,
+            relevance_score=relevance_score,
+            confidence_score=confidence_score,
+            priority=priority,
+            status="PENDING_REVIEW",
+            evidence=evidence,
+            prompt_version=prompt_version,
+        )
 
-        except Exception as exc:
-            db.rollback()
+        db.add(insight)
+        db.commit()
+        db.refresh(insight)
 
-            raise HTTPException(
-                status_code=500,
-                detail=(
-                    "Failed to persist "
-                    "generated insight."
-                ),
-            ) from exc
+    except Exception as exc:
+        db.rollback()
+
+        print(
+            "INSIGHT WORKFLOW ERROR:",
+            repr(exc),
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Failed to generate intelligence insight."
+            ),
+        ) from exc
 
     return InsightResponse(
         insight_id=insight_id,
@@ -220,10 +393,7 @@ def generate_insight(
             )
         ),
 
-        prompt_version=result.get(
-            "prompt_version",
-            "unknown",
-        ),
+        prompt_version=prompt_version,
 
         evidence=evidence,
     )

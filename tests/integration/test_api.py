@@ -2,11 +2,11 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from app.api.dependencies import get_workflow
 from app.main import app
+from app.models.brand import Brand
 from app.models.insight import Insight
 from app.models.signal import Signal
 from app.models.source import Source
 from app.services.database import SessionLocal
-from app.models.brand import Brand
 
 class FakeWorkflow:
     """Deterministic workflow for API tests."""
@@ -76,45 +76,47 @@ def test_insight_endpoint() -> None:
         get_workflow
     ] = lambda: FakeWorkflow()
 
-    client = TestClient(app)
+    try:
+        client = TestClient(app)
 
-    response = client.post(
-        "/api/v1/insights",
-        json={
-            "brand_id": "brand_001",
-            "signal": {
-                "title": (
-                    "High protein snacks "
-                    "gain popularity"
-                ),
-                "text": (
-                    "Consumers increasingly want "
-                    "protein-rich snacks."
-                ),
-                "category": "healthy_snacks",
-                "signal_type": "consumer_trend",
-                "metadata": {
-                    "region": "India"
+        response = client.post(
+            "/api/v1/insights",
+            json={
+                "brand_id": "brand_001",
+                "signal": {
+                    "title": (
+                        "High protein snacks "
+                        "gain popularity"
+                    ),
+                    "text": (
+                        "Consumers increasingly want "
+                        "protein-rich snacks."
+                    ),
+                    "category": "healthy_snacks",
+                    "signal_type": "consumer_trend",
+                    "metadata": {
+                        "region": "India"
+                    },
                 },
             },
-        },
-    )
+        )
 
-    assert response.status_code == 200
+        assert response.status_code == 200
 
-    body = response.json()
+        body = response.json()
 
-    assert body["brand_id"] == "brand_001"
-    assert body["priority"] == "P1"
-    assert body["grounded"] is True
-    assert body["evidence_count"] == 1
-    assert body["prompt_version"] == (
-        "insight_generation:v1"
-    )
+        assert body["brand_id"] == "brand_001"
+        assert body["priority"] == "P1"
+        assert body["grounded"] is True
+        assert body["evidence_count"] == 1
+        assert body["prompt_version"] == (
+            "insight_generation:v1"
+        )
 
-    assert body["recommendation"]
+        assert body["recommendation"]
 
-    app.dependency_overrides.clear()
+    finally:
+        app.dependency_overrides.clear()
 
 def test_insight_persists_prompt_version() -> None:
     """
@@ -128,46 +130,60 @@ def test_insight_persists_prompt_version() -> None:
 
     db = SessionLocal()
 
-    source_id = f"test_source_{uuid4().hex[:8]}"
-    signal_id = f"test_signal_{uuid4().hex[:8]}"
+    source_id = (
+        f"test_source_{uuid4().hex[:8]}"
+    )
+    signal_id = (
+        f"test_signal_{uuid4().hex[:8]}"
+    )
     insight_id = None
 
     try:
-        brand = Brand(
-            id="brand_001",
-            name="Prompt Version Test Brand",
-            category="healthy_snacks",
-            description=(
-                "Synthetic brand used for prompt version testing."
-            ),
-            configuration={
-                "keywords": [
-                    "protein",
-                    "healthy snacks",
-                    "high protein",
-                ],
-                "strategic_priorities": [
-                    "health",
-                    "protein",
-                    "convenience",
-                ],
-                "target_consumer": [
-                    "young_adults",
-                    "working_professionals",
-                ],
-                "geography": [
-                    "india",
-                ],
-            },
+        brand = db.get(
+            Brand,
+            "brand_001",
         )
 
-        db.add(brand)
-        db.flush()
+        if brand is None:
+            brand = Brand(
+                id="brand_001",
+                name="Prompt Version Test Brand",
+                category="healthy_snacks",
+                description=(
+                    "Synthetic brand used for "
+                    "prompt version testing."
+                ),
+                configuration={
+                    "keywords": [
+                        "protein",
+                        "healthy snacks",
+                        "high protein",
+                    ],
+                    "strategic_priorities": [
+                        "health",
+                        "protein",
+                        "convenience",
+                    ],
+                    "target_consumer": [
+                        "young_adults",
+                        "working_professionals",
+                    ],
+                    "geography": [
+                        "india",
+                    ],
+                },
+            )
+
+            db.add(brand)
+            db.flush()
 
         source = Source(
             id=source_id,
             source_type="synthetic_test",
-            url="https://example.com/prompt-version-test",
+            url=(
+                "https://example.com/"
+                "prompt-version-test"
+            ),
             title="Prompt Version Test Source",
             content_hash=uuid4().hex,
         )
@@ -180,7 +196,9 @@ def test_insight_persists_prompt_version() -> None:
             source_id=source_id,
             signal_type="consumer_trend",
             category="healthy_snacks",
-            title="Protein snack demand is increasing",
+            title=(
+                "Protein snack demand is increasing"
+            ),
             text=(
                 "Consumers increasingly want "
                 "convenient high protein snacks."
@@ -205,7 +223,8 @@ def test_insight_persists_prompt_version() -> None:
                 "brand_id": "brand_001",
                 "signal": {
                     "title": (
-                        "Protein snack demand is increasing"
+                        "Protein snack demand "
+                        "is increasing"
                     ),
                     "text": (
                         "Consumers increasingly want "
@@ -221,8 +240,14 @@ def test_insight_persists_prompt_version() -> None:
             },
         )
 
-        print("STATUS:", response.status_code)
-        print("BODY:", response.text)
+        print(
+            "STATUS:",
+            response.status_code,
+        )
+        print(
+            "BODY:",
+            response.text,
+        )
 
         assert response.status_code == 200
 
@@ -280,14 +305,6 @@ def test_insight_persists_prompt_version() -> None:
         if source is not None:
             db.delete(source)
             db.flush()
-
-        brand = db.get(
-            Brand,
-            "brand_001",
-        )
-
-        if brand is not None:
-            db.delete(brand)
 
         db.commit()
         db.close()
